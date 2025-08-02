@@ -20,7 +20,7 @@ GodzamokXtreme.launch = function () {
 			showLoopButton: 1,		  // Show "Loop" button to repeatedly sell/buy buildings in a loop
 			loopModeEnabled: 0,		  // Whether Loop Mode is currently active (1 = active, 0 = off)
 			hotkeyG: 1,               // Enable "G" hotkey to trigger script
-			inputDelay: 0,            // Add delay between input events
+			inputDelay: 1,            // Add delay between input events
 			autoSwitchGods: 1,        // Automatically switch to Godzamok if not selected
 			selectedSlot: 1,          // Temple slot where Godzamok will be placed
 			buybackEnabled: 1,        // Enable automatic buyback of sold buildings

@@ -13,6 +13,6 @@
   "lang.js"
  ],
  "AllowSteamAchievs": 1,
- "Disabled": 1,
+ "Disabled": 0,
  "Workshop": "3539850301"
 }

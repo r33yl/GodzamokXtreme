@@ -1,9 +1,10 @@
 if (GodzamokXtreme === undefined) var GodzamokXtreme = {};
 if (typeof CCSE == 'undefined') Game.LoadMod('https://klattmose.github.io/CookieClicker/CCSE.js');
+if (loc("gx_toggle_on") == "gx_toggle_on") Game.LoadMod('https://r33yl.github.io/GodzamokXtreme/lang.js');
 
 GodzamokXtreme.name = 'Godzamok Ultimate';
 GodzamokXtreme.ID = 'godzamok_ultimate';
-GodzamokXtreme.version = '2.1';
+GodzamokXtreme.version = '2.2';
 GodzamokXtreme.GameVersion = '2.053';
 
 GodzamokXtreme.launch = function () {

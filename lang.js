@@ -16,7 +16,7 @@ ModLanguage('*', {
     "gx_sell_mode_units": "Units",  // Selling by fixed number of buildings
 
     // Notification shown when the mod loads
-    "gx_mod_loaded_title": "GodzamokXtreme loaded!",
+    "gx_mod_loaded_title": "Godzamok Ultimate loaded!",
     "gx_mod_loaded_desc": "May Godzamok bless you with golden cookies.",
 
     // "Loop" means repeat the script execution continuously
@@ -92,12 +92,12 @@ ModLanguage('*', {
     "gx_for": "for",  // Used to specify the price/amount paid or received
 
     // Confirmation dialog texts for resetting config
-    "gx_confirm_reset_question": "Reset {modName}'s config to the default settings?",
+    "gx_confirm_reset_question": "Reset Godzamok Ultimate's config to the default settings?",
     "gx_yes": "Yes",  // Affirmative answer button text
     "gx_no": "No",  // Negative answer button text
 
     // Popup notification text shown after config reset
-    "gx_settings_reset_popup": "GodzamokXtreme settings reset.",  // Confirmation popup message
+    "gx_settings_reset_popup": "Godzamok Ultimate settings reset.",  // Confirmation popup message
 });
 
 //***********************************
@@ -115,7 +115,7 @@ ModLanguage('ZH-CN', {
     "gx_sell_mode_percent": "百分比",
     "gx_sell_mode_units": "数量",
 
-    "gx_mod_loaded_title": "GodzamokXtreme 已加载！",
+    "gx_mod_loaded_title": "Godzamok Ultimate 已加载！",
     "gx_mod_loaded_desc": "愿 Godzamok 赐你金色曲奇。",
 
     "gx_loop": "循环",
@@ -170,11 +170,11 @@ ModLanguage('ZH-CN', {
     "gx_bought": "买回：",
     "gx_for": "花费",
 
-    "gx_confirm_reset_question": "重置 {modName} 配置为默认？",
+    "gx_confirm_reset_question": "重置 Godzamok Ultimate 配置为默认？",
     "gx_yes": "是",
     "gx_no": "否",
 
-    "gx_settings_reset_popup": "GodzamokXtreme 配置已重置。",
+    "gx_settings_reset_popup": "Godzamok Ultimate 配置已重置。",
 });
 
 //***********************************
@@ -192,7 +192,7 @@ ModLanguage('DE', {
     "gx_sell_mode_percent": "Prozent",
     "gx_sell_mode_units": "Einheiten",
 
-    "gx_mod_loaded_title": "GodzamokXtreme geladen!",
+    "gx_mod_loaded_title": "Godzamok Ultimate geladen!",
     "gx_mod_loaded_desc": "Möge Godzamok dich mit goldenen Keksen segnen.",
 
     "gx_loop": "Schleife",
@@ -247,11 +247,11 @@ ModLanguage('DE', {
     "gx_bought": "Gekauft:",
     "gx_for": "für",
 
-    "gx_confirm_reset_question": "Konfiguration von {modName} auf Standardeinstellungen zurücksetzen?",
+    "gx_confirm_reset_question": "Konfiguration von Godzamok Ultimate auf Standardeinstellungen zurücksetzen?",
     "gx_yes": "Ja",
     "gx_no": "Nein",
 
-    "gx_settings_reset_popup": "GodzamokXtreme-Einstellungen wurden zurückgesetzt.",
+    "gx_settings_reset_popup": "Godzamok Ultimate-Einstellungen wurden zurückgesetzt.",
 });
 
 //***********************************
@@ -269,7 +269,7 @@ ModLanguage('ES', {
     "gx_sell_mode_percent": "Porcentaje",
     "gx_sell_mode_units": "Unidades",
 
-    "gx_mod_loaded_title": "¡GodzamokXtreme cargado!",
+    "gx_mod_loaded_title": "¡Godzamok Ultimate cargado!",
     "gx_mod_loaded_desc": "Que Godzamok te bendiga con galletas doradas.",
 
     "gx_loop": "Bucle",
@@ -324,11 +324,11 @@ ModLanguage('ES', {
     "gx_bought": "Comprado:",
     "gx_for": "por",
 
-    "gx_confirm_reset_question": "¿Restablecer la configuración de {modName} a los valores predeterminados?",
+    "gx_confirm_reset_question": "¿Restablecer la configuración de Godzamok Ultimate a los valores predeterminados?",
     "gx_yes": "Sí",
     "gx_no": "No",
 
-    "gx_settings_reset_popup": "Configuración de GodzamokXtreme restablecida.",
+    "gx_settings_reset_popup": "Configuración de Godzamok Ultimate restablecida.",
 });
 
 //***********************************
@@ -346,7 +346,7 @@ ModLanguage('FR', {
     "gx_sell_mode_percent": "Pourcentage",
     "gx_sell_mode_units": "Unités",
 
-    "gx_mod_loaded_title": "GodzamokXtreme chargé !",
+    "gx_mod_loaded_title": "Godzamok Ultimate chargé !",
     "gx_mod_loaded_desc": "Que Godzamok vous bénisse avec des cookies dorés.",
 
     "gx_loop": "Boucle",
@@ -401,11 +401,11 @@ ModLanguage('FR', {
     "gx_bought": "Acheté :",
     "gx_for": "pour",
 
-    "gx_confirm_reset_question": "Réinitialiser la config de {modName} ?",
+    "gx_confirm_reset_question": "Réinitialiser la config de Godzamok Ultimate ?",
     "gx_yes": "Oui",
     "gx_no": "Non",
 
-    "gx_settings_reset_popup": "Config GodzamokXtreme réinitialisée.",
+    "gx_settings_reset_popup": "Config Godzamok Ultimate réinitialisée.",
 });
 
 //***********************************
@@ -423,7 +423,7 @@ ModLanguage('PT-BR', {
     "gx_sell_mode_percent": "%",
     "gx_sell_mode_units": "Unids",
 
-    "gx_mod_loaded_title": "GodzamokXtreme carregado!",
+    "gx_mod_loaded_title": "Godzamok Ultimate carregado!",
     "gx_mod_loaded_desc": "Que Godzamok te abençoe com cookies dourados.",
 
     "gx_loop": "Loop",
@@ -478,11 +478,11 @@ ModLanguage('PT-BR', {
     "gx_bought": "Comprados:",
     "gx_for": "por",
 
-    "gx_confirm_reset_question": "Resetar config do {modName} para padrão?",
+    "gx_confirm_reset_question": "Resetar config do Godzamok Ultimate para padrão?",
     "gx_yes": "Sim",
     "gx_no": "Não",
 
-    "gx_settings_reset_popup": "Configurações GodzamokXtreme resetadas.",
+    "gx_settings_reset_popup": "Configurações Godzamok Ultimate resetadas.",
 });
 
 //***********************************
@@ -500,7 +500,7 @@ ModLanguage('RU', {
     "gx_sell_mode_percent": "Процент",
     "gx_sell_mode_units": "Штучно",
 
-    "gx_mod_loaded_title": "GodzamokXtreme загружен!",
+    "gx_mod_loaded_title": "Godzamok Ultimate загружен!",
     "gx_mod_loaded_desc": "Пусть Godzamok благословит тебя золотыми печеньками.",
 
     "gx_loop": "Цикл",
@@ -555,10 +555,10 @@ ModLanguage('RU', {
     "gx_bought": "Куплено:",
     "gx_for": "за",
 
-    "gx_confirm_reset_question": "Сбросить настройки {modName} до значений по умолчанию?",
+    "gx_confirm_reset_question": "Сбросить настройки Godzamok Ultimate до значений по умолчанию?",
     "gx_yes": "Да",
     "gx_no": "Нет",
-    "gx_settings_reset_popup": "Настройки GodzamokXtreme сброшены.",
+    "gx_settings_reset_popup": "Настройки Godzamok Ultimate сброшены.",
 });
 
 //***********************************
@@ -576,7 +576,7 @@ ModLanguage('TR', {
     "gx_sell_mode_percent": "Yüzde",
     "gx_sell_mode_units": "Adet",
 
-    "gx_mod_loaded_title": "GodzamokXtreme yüklendi!",
+    "gx_mod_loaded_title": "Godzamok Ultimate yüklendi!",
     "gx_mod_loaded_desc": "Godzamok size altın kurabiyeler versin.",
 
     "gx_loop": "Döngü",
@@ -631,9 +631,9 @@ ModLanguage('TR', {
     "gx_bought": "Alındı:",
     "gx_for": "karşılığında",
 
-    "gx_confirm_reset_question": "{modName} ayarları varsayılanlara sıfırlansın mı?",
+    "gx_confirm_reset_question": "Godzamok Ultimate ayarları varsayılanlara sıfırlansın mı?",
     "gx_yes": "Evet",
     "gx_no": "Hayır",
 
-    "gx_settings_reset_popup": "GodzamokXtreme ayarları sıfırlandı.",
+    "gx_settings_reset_popup": "Godzamok Ultimate ayarları sıfırlandı.",
 });

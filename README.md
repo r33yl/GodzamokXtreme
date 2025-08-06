@@ -4,10 +4,12 @@
 
 <img width="199" height="98" alt="Screenshot 2025-08-01 235102" src="https://github.com/user-attachments/assets/6afdc72c-183f-4a8d-82b2-27be72ef4230" />
 
+In the screenshot, information about the current active buff is displayed using the [Quick Info](https://github.com/swbuwk/CC_QuickInfoMod) mod.
+
 ## How to Install
 
 ### Steam Version (Workshop):
-1. Go to the [Steam Workshop page](https://steamcommunity.com/sharedfiles/filedetails/?id=3539850301).
+1. Go to the [Steam Workshop page](https://steamcommunity.com/sharedfiles/filedetails/?id=3543119876).
 2. Click **Subscribe**.
 3. Launch Cookie Clicker via Steam — the mod will load automatically if you have **Mod Manager** enabled.
 

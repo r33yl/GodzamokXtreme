@@ -3,11 +3,14 @@
  "ID": "godzamok_xtreme",
  "Author": "reeyl",
  "Description": "GodzamokXtreme — customizable mod to automate building sales and spirit switching for Godzamok bonuses in Cookie Clicker.",
- "ModVersion": 1,
+ "ModVersion": 1.1,
  "GameVersion": 2.053,
- "Date": "30/08/2025",
+ "Date": "01/09/2025",
  "Dependencies": [
   "CCSE"
+ ],
+ "LanguagePacks": [
+  "lang.js"
  ],
  "AllowSteamAchievs": 1,
  "Disabled": 1,

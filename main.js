@@ -3,7 +3,7 @@ if (typeof CCSE == 'undefined') Game.LoadMod('https://klattmose.github.io/Cookie
 
 GodzamokXtreme.name = 'GodzamokXtreme';
 GodzamokXtreme.ID = 'godzamok_xtreme';
-GodzamokXtreme.version = '1.0';
+GodzamokXtreme.version = '1.1';
 GodzamokXtreme.GameVersion = '2.053';
 
 GodzamokXtreme.launch = function () {
@@ -15,20 +15,27 @@ GodzamokXtreme.launch = function () {
 	GodzamokXtreme.defaultConfig = function () {
 		const defaultBuildings = [3, 4, 5, 9, 12, 17];	// Default buildings enabled for selling
 		return {
+			// === UI & Controls ===
+			showSellBuyInfo: 0,       // Show summary info (how many buildings were sold/bought) after each script run
 			showMainButton: 1,        // Show the main Godzamok button near the big cookie
 			showTempleButton: 0,      // Show an additional button in the Temple minigame
 			showLoopButton: 1,		  // Show "Loop" button to repeatedly sell/buy buildings in a loop
 			loopModeEnabled: 0,		  // Whether Loop Mode is currently active (1 = active, 0 = off)
 			hotkeyG: 1,               // Enable "G" hotkey to trigger script
 			inputDelay: 1,            // Add delay between input events
+			// === Temple ===
 			autoSwitchGods: 1,        // Automatically switch to Godzamok if not selected
 			selectedSlot: 1,          // Temple slot where Godzamok will be placed
+			// === Buyback ===
 			buybackEnabled: 1,        // Enable automatic buyback of sold buildings
 			buybackType: 1,           // Buyback strategy (0: with profit, 1: full amount, 2: percentage)
 			buybackPercent: 90,       // Percentage for type 2 buyback
+			// === Building Display ===
 			showOnlyEnabled: 1,       // Show only enabled buildings in the UI
 			hideEmptyBuildings: 0,    // Hide buildings with 0 owned units
+			// === Sell Mode ===
 			sellMode: 0,              // Sell mode: 0 = percent, 1 = units
+			// === Building Settings ===
 			buildings: Game.ObjectsById.map((building) => ({
 				enabled: defaultBuildings.includes(building.id) ? 1 : 0,
 				sellPercent: 100,     // % to sell
@@ -37,21 +44,21 @@ GodzamokXtreme.launch = function () {
 		};
 	};
 
+	GodzamokXtreme.defaultDelay = 50;
+
 	//***********************************
 	//    ENUM OPTIONS
 	//***********************************
 
-	GodzamokXtreme.defaultDelay = 50;
-
 	GodzamokXtreme.buybackOptions = [
-		{ pref: 0, name: 'Use total gain' },
-		{ pref: 1, name: 'Buy full amount' },
-		{ pref: 2, name: 'Buy percentage' }
+		{ pref: 0, name: loc("gx_buyback_total_gain") },
+		{ pref: 1, name: loc("gx_buyback_full_amount") },
+		{ pref: 2, name: loc("gx_buyback_percentage") }
 	];
 
 	GodzamokXtreme.sellModeOptions = [
-		{ pref: 0, name: 'Percent' },
-		{ pref: 1, name: 'Units' }
+		{ pref: 0, name: loc("gx_sell_mode_percent") },
+		{ pref: 1, name: loc("gx_sell_mode_units") }
 	];
 
 	//***********************************
@@ -256,13 +263,12 @@ GodzamokXtreme.launch = function () {
 		GodzamokXtreme.addMainButtons();
 		GodzamokXtreme.addKeyListener();
 		GodzamokXtreme.monitorTempleSlotsAndSwaps();
-		GodzamokXtreme.syncAllSellValues();
+		GodzamokXtreme.syncAllSellValues(0);
 
 		// Setup core run logic (with throttling if enabled)
 		GodzamokXtreme.updateRun();
 
-		Game.Notify("GodzamokXtreme loaded!", "May Godzamok bless you with golden cookies.", [23, 18], 1);
-
+		Game.Notify(loc("gx_mod_loaded_title"), loc("gx_mod_loaded_desc"), [23, 18], 1);
 	};
 
 	//***********************************
@@ -280,7 +286,6 @@ GodzamokXtreme.launch = function () {
 
 		if (GodzamokXtreme.config.showTempleButton) {
 			createUIButton('row6', 'godzamokXtremeWrapper_temple');
-
 		}
 
 		// Creates a UI button wrapper and adds it to specified DOM container
@@ -302,7 +307,7 @@ GodzamokXtreme.launch = function () {
 			const godSlotClass = GodzamokXtreme.getGodSlotVisualClass();
 			const btn = document.createElement('div');
 			btn.className = `godzamokXtremeButton ${godSlotClass}`;
-			GodzamokXtreme.attachHoldToRun(btn);
+			btn.onclick = () => GodzamokXtreme.run();
 
 			wrapper.appendChild(shine);
 			wrapper.appendChild(btn);
@@ -310,7 +315,7 @@ GodzamokXtreme.launch = function () {
 			if (GodzamokXtreme.config.showLoopButton) {
 				const loopBtn = document.createElement('div');
 				loopBtn.className = `godzamokXtremeLoopButton titleFont`;
-				loopBtn.textContent = 'Loop';
+				loopBtn.textContent = loc("gx_loop");
 				loopBtn.onclick = () => GodzamokXtreme.toggleLoopMode();
 
 				wrapper.appendChild(loopBtn);
@@ -321,35 +326,10 @@ GodzamokXtreme.launch = function () {
 	};
 
 	//***********************************
-	//    BUTTON PRESS SUPPORT
+	//    LOOP MODE SUPPORT
 	//***********************************
 
-	// Attaches mousedown-based hold behavior to a button element
-	GodzamokXtreme.attachHoldToRun = function (btn) {
-		let holdInterval = null;
-
-		btn.addEventListener('mousedown', () => {
-			GodzamokXtreme.run();
-
-			const delay = GodzamokXtreme.config.inputDelay ? GodzamokXtreme.defaultDelay : 0;
-
-			holdInterval = setInterval(() => {
-				GodzamokXtreme.run();
-			}, delay);
-		});
-
-		const clear = () => {
-			if (holdInterval) {
-				clearInterval(holdInterval);
-				holdInterval = null;
-			}
-		};
-
-		btn.addEventListener('mouseup', clear);
-		btn.addEventListener('mouseleave', clear);
-		btn.addEventListener('mouseout', clear); // optional: for safety
-	};
-
+	// Toggles loop mode for automated repeated execution of the Godzamok run script.
 	GodzamokXtreme.toggleLoopMode = function () {
 		GodzamokXtreme.config.loopModeEnabled = GodzamokXtreme.config.loopModeEnabled ? 0 : 1;
 
@@ -409,7 +389,6 @@ GodzamokXtreme.launch = function () {
 		};
 	};
 
-
 	//***********************************
 	//    SETTINGS MENU UI
 	//***********************************
@@ -429,56 +408,73 @@ GodzamokXtreme.launch = function () {
 		}
 
 		try {
+			//========== UTILITIES ==========
+			str += menu.Header(loc("gx_header_utilities"));
+
+			str += '<div class="listing">' +
+				menu.ToggleButton(GodzamokXtreme.config, 'showSellBuyInfo',
+					'GodzamokXtreme_ShowSellBuyInfo',
+					loc("gx_debug_info_prefix") + loc("gx_toggle_on"),
+					loc("gx_debug_info_prefix") + loc("gx_toggle_off"),
+					"GodzamokXtreme.Toggle") +
+				'<label>' + loc("gx_debug_info_label") + '</label>' +
+				'</div>';
+
+			str += '<div class="listing">' +
+				addClassToHtml(
+					menu.ActionButton("GodzamokXtreme.confirmResetConfig();", loc("gx_reset_config")),
+					'warning'
+				) +
+				'</div>';
+
+			str += '<br/>';
+
 			//========== GENERAL ==========
-			str += menu.Header('General');
+			str += menu.Header(loc("gx_header_input_hotkeys"));
 
 			str += '<div class="listing">' +
 				menu.ToggleButton(GodzamokXtreme.config, 'showMainButton',
 					'GodzamokXtreme_MainButton',
-					'Button near big cookie: ON',
-					'Button near big cookie: OFF',
+					loc("gx_button_near_cookie") + loc("gx_toggle_on"),
+					loc("gx_button_near_cookie") + loc("gx_toggle_off"),
 					"GodzamokXtreme.ToggleStartButton") +
 				menu.ToggleButton(GodzamokXtreme.config, 'showTempleButton',
 					'GodzamokXtreme_TempleButton',
-					'Button in Temple: ON',
-					'Button in Temple: OFF',
+					loc("gx_button_in_temple") + loc("gx_toggle_on"),
+					loc("gx_button_in_temple") + loc("gx_toggle_off"),
 					"GodzamokXtreme.ToggleStartButton") +
-				'<label>Display buttons for script activation</label>' +
+				'<label>' + loc("gx_display_buttons_label") + '</label>' +
 				'</div>';
 
 			str += '<div class="listing">' +
 				menu.ToggleButton(GodzamokXtreme.config, 'showLoopButton',
 					'GodzamokXtreme_ShowLoopButton',
-					'Show Loop Button: ON',
-					'Show Loop Button: OFF',
+					loc("gx_show_loop_button") + loc("gx_toggle_on"),
+					loc("gx_show_loop_button") + loc("gx_toggle_off"),
 					"GodzamokXtreme.ToggleStartButton") +
-				'<label>Display extra button for repeated script execution on hold</label>' +
+				'<label>' + loc("gx_show_loop_button_label") + '</label>' +
 				'</div>';
 
 			str += '<div class="listing">' +
 				menu.ToggleButton(GodzamokXtreme.config, 'hotkeyG',
 					'GodzamokXtreme_HotkeyG',
-					'Hotkey G: ON',
-					'Hotkey G: OFF',
+					loc("gx_hotkey_g") + loc("gx_toggle_on"),
+					loc("gx_hotkey_g") + loc("gx_toggle_off"),
 					"GodzamokXtreme.Toggle") +
 				addClassToHtml(
 					menu.ToggleButton(GodzamokXtreme.config, 'inputDelay',
 						'GodzamokXtreme_InputDelay',
-						'Input delay: ON',
-						'Input delay: OFF',
+						loc("gx_input_delay") + loc("gx_toggle_on"),
+						loc("gx_input_delay") + loc("gx_toggle_off"),
 						"GodzamokXtreme.ToggleInputDelay"),
 					'neato') +
-				`<label>Apply ${GodzamokXtreme.defaultDelay} ms delay between actions</label>` +
-				'</div>';
-
-			str += '<div class="listing">' +
-				addClassToHtml(menu.ActionButton("GodzamokXtreme.confirmResetConfig();", 'Reset Config'), 'warning') +
+				`<label>` + loc("gx_input_delay_label") + ` ${GodzamokXtreme.defaultDelay} ms</label>` +
 				'</div>';
 
 			str += '<br/>';
 
 			//========== TEMPLE ==========
-			str += menu.Header('Temple');
+			str += menu.Header(loc("gx_header_temple"));
 
 			// Auto-switch to Godzamok
 			str += '<div class="listing widthAuto">' +
@@ -487,32 +483,32 @@ GodzamokXtreme.launch = function () {
 						GodzamokXtreme.config,
 						'autoSwitchGods',
 						'GodzamokXtreme_AutoSwitchGods',
-						'Auto-switch to Godzamok: ON',
-						'Auto-switch to Godzamok: OFF',
+						loc("gx_auto_switch_god") + loc("gx_toggle_on"),
+						loc("gx_auto_switch_god") + loc("gx_toggle_off"),
 						"GodzamokXtreme.ToggleAutoSwitchGods"
 					),
 					'neato'
 				) +
-				'<label>Automatically assign Godzamok if not active</label>' +
+				'<label>' + loc("gx_auto_switch_god_label") + '</label>' +
 				'</div>';
 
 			// God slot selector (1, 2, 3)
 			str += '<div class="listing widthAuto">';
 			for (let i = 1; i <= 3; i++) {
 				const isActive = GodzamokXtreme.config.selectedSlot === i;
-				str += `<a class="smallFancyButton option purple ${isActive ? '' : 'off'}" 
+				str += `<a class="smallFancyButton option ${isActive ? '' : 'off'} purple" 
 						id="GodzamokXtreme_SelectedGodSlot_${i}" 
 						onclick="GodzamokXtreme.ToggleGodSlot(${i})">
 							${i}
 					</a>`;
 			}
-			str += '<label>Temple slot where Godzamok will be placed</label>' +
+			str += '<label>' + loc("gx_temple_slot_label") + '</label>' +
 				'</div>';
 
 			str += '<br/>';
 
 			//========== BUYBACK ==========
-			str += menu.Header('Buyback');
+			str += menu.Header(loc("gx_header_buyback"));
 
 			// Toggle auto-buyback
 			str += '<div class="listing">' +
@@ -521,26 +517,26 @@ GodzamokXtreme.launch = function () {
 						GodzamokXtreme.config,
 						'buybackEnabled',
 						'GodzamokXtreme_BuybackEnabled',
-						'Buyback: ON',
-						'Buyback: OFF',
+						loc("gx_buyback") + loc("gx_toggle_on"),
+						loc("gx_buyback") + loc("gx_toggle_off"),
 						"GodzamokXtreme.Toggle"
 					),
 					'neato'
 				) +
-				'<label>Instantly rebuy buildings after selling</label>' +
+				'<label>' + loc("gx_buyback_label") + '</label>' +
 				'</div>';
 
 			// Buyback strategy selection
 			str += '<div class="listing">';
 			for (let i = 0; i < GodzamokXtreme.buybackOptions.length; i++) {
 				const isActive = GodzamokXtreme.config.buybackType === i;
-				str += `<a class="smallFancyButton option ${isActive ? '' : 'off'}"
+				str += `<a class="smallFancyButton prefButton option ${isActive ? '' : 'off'}"
 								id="GodzamokXtreme_BuybackType_${i}"
 								onclick="GodzamokXtreme.ToggleBuybackType(${i})">
 									${GodzamokXtreme.buybackOptions[i].name}
 							</a>`;
 			}
-			str += '<label>Buyback strategy</label>' +
+			str += '<label>' + loc("gx_buyback_strategy_label") + '</label>' +
 				'</div>';
 
 			// Slider for percentage mode
@@ -548,7 +544,7 @@ GodzamokXtreme.launch = function () {
 				addClassToHtml(
 					menu.Slider(
 						'GodzamokXtreme_BuybackPercentSlider',
-						'Buyback Percent',
+						loc("gx_buyback_percent"),
 						'[$]%',
 						() => GodzamokXtreme.config.buybackPercent,
 						'GodzamokXtreme.updateBuybackPercent(this.value);',
@@ -556,13 +552,13 @@ GodzamokXtreme.launch = function () {
 					),
 					GodzamokXtreme.config.buybackType === 2 ? '' : 'disable'
 				) +
-				'<label>Only used when "Buy percentage" strategy is selected</label>' +
+				'<label>' + loc("gx_buyback_percent_label") + '</label>' +
 				'</div>';
 
 			str += '<br/>';
 
 			//========== SELL ==========
-			str += menu.Header('Sell');
+			str += menu.Header(loc("gx_header_sell"));
 
 			// Toggle filters
 			str += '<div class="listing">' +
@@ -571,8 +567,8 @@ GodzamokXtreme.launch = function () {
 						GodzamokXtreme.config,
 						'showOnlyEnabled',
 						'GodzamokXtreme_ShowAll',
-						'Show Only Enabled: ON',
-						'Show Only Enabled: OFF',
+						loc("gx_show_only_enabled") + loc("gx_toggle_on"),
+						loc("gx_show_only_enabled") + loc("gx_toggle_off"),
 						"GodzamokXtreme.Toggle"
 					),
 					'neato'
@@ -582,26 +578,26 @@ GodzamokXtreme.launch = function () {
 						GodzamokXtreme.config,
 						'hideEmptyBuildings',
 						'GodzamokXtreme_HideEmpty',
-						'Hide Empty: ON',
-						'Hide Empty: OFF',
+						loc("gx_hide_empty") + loc("gx_toggle_on"),
+						loc("gx_hide_empty") + loc("gx_toggle_off"),
 						"GodzamokXtreme.Toggle"
 					),
 					'neato'
 				) +
-				'<label>Filters for the building list</label>' +
+				'<label>' + loc("gx_building_list_filters_label") + '</label>' +
 				'</div>';
 
 			// Sell mode toggle (percent / units)
 			str += '<div class="listing widthAuto">';
 			for (let i = 0; i < GodzamokXtreme.sellModeOptions.length; i++) {
 				const isActive = GodzamokXtreme.config.sellMode === i;
-				str += `<a class="smallFancyButton option purple ${isActive ? '' : 'off'}" 
+				str += `<a class="smallFancyButton option prefButton ${isActive ? '' : 'off'} purple" 
 						id="GodzamokXtreme_SellMode_${i}" 
 						onclick="GodzamokXtreme.ToggleSellMode(${i})">
 						${GodzamokXtreme.sellModeOptions[i].name}
 					</a>`;
 			}
-			str += '<label>Sell Mode</label>' +
+			str += '<label>' + loc("gx_sell_mode_label") + '</label>' +
 				'</div>';
 
 			// Preset buttons for % values
@@ -613,7 +609,7 @@ GodzamokXtreme.launch = function () {
 					'purple'
 				);
 			});
-			str += '<label>Preset % for all buildings</label>' +
+			str += '<label>' + loc("gx_preset_percent_label") + '</label>' +
 				'</div>';
 
 			// Preset buttons for unit values
@@ -622,7 +618,7 @@ GodzamokXtreme.launch = function () {
 				addClassToHtml(menu.ActionButton(`GodzamokXtreme.addSellUnits(10);`, `+10`), 'purple') +
 				addClassToHtml(menu.ActionButton(`GodzamokXtreme.addSellUnits(50);`, `+50`), 'purple') +
 				addClassToHtml(menu.ActionButton(`GodzamokXtreme.addSellUnits(100);`, `+100`), 'purple') +
-				'<label>Preset units to add per building</label>' +
+				'<label>' + loc("gx_preset_units_label") + '</label>' +
 				'</div>';
 
 			//========== INDIVIDUAL BUILDING SETTINGS ==========
@@ -641,26 +637,26 @@ GodzamokXtreme.launch = function () {
 				const isPercentMode = GodzamokXtreme.config.sellMode === 0;
 
 				// Create UI block for each building
-				str += `<div class="listing titleFont"> ` +
+				str += '<div class="listing titleFont">' +
 					menu.ToggleButton(
 						GodzamokXtreme.config.buildings[index], 'enabled',
 						itemId,
-						`${obj.dname}: ON`,
-						`${obj.dname}: OFF`,
-						`GodzamokXtreme.ToggleBuilding(${index}); `,
+						`${obj.dname}: ` + loc("gx_toggle_on"),
+						`${obj.dname}: ` + loc("gx_toggle_off"),
+						`GodzamokXtreme.ToggleBuilding(${index});`,
 					) +
-					`<span style = "margin: 0 4px;"></span > ` +
+					`<span style = "margin: 0 4px;"></span >` +
 					// Input: percent
-					`Sell: <input class="input" type="number" min="0" max="100" value="${sellPercent}" style="width: 54px;" 
+					loc("gx_sell_label") + ` <input class="input" type="number" min="0" max="100" value="${sellPercent}" style="width: 54px;" 
 						${isPercentMode ? '' : 'disabled'} 
 						onchange="GodzamokXtreme.config.buildings[${index}].sellPercent = parseInt(this.value)||0; GodzamokXtreme.syncSellValues(${index});">` +
 					`<span class="infoText">%</span>` +
-					`<span style="margin: 0 8px;">or</span> ` +
+					`<span style="margin: 0 8px;">` + loc("gx_or") + `</span>` +
 					// Input: units
 					`<input class="input" type="number" min="0" max="1000" value="${sellUnits}" style="width: 54px;" 
 						${isPercentMode ? 'disabled' : ''} 
 						onchange="GodzamokXtreme.config.buildings[${index}].sellUnits = parseInt(this.value)||0; GodzamokXtreme.syncSellValues(${index});">` +
-					`<span class="infoText">units</span>` +
+					`<span class="infoText">` + loc("gx_units") + `</span>` +
 					`</div>`;
 			}
 
@@ -680,12 +676,6 @@ GodzamokXtreme.launch = function () {
 	GodzamokXtreme.Toggle = function (prefName, button, on, off, invert) {
 		let value = GodzamokXtreme.config[prefName];
 		GodzamokXtreme.config[prefName] = value ? 0 : 1;
-
-		const element = l(button);
-		element.innerHTML = GodzamokXtreme.config[prefName] ? on : off;
-		element.className = 'smallFancyButton prefButton option' +
-			((GodzamokXtreme.config[prefName] ^ invert) ? '' : ' off');
-
 		Game.UpdateMenu();
 	};
 
@@ -704,7 +694,7 @@ GodzamokXtreme.launch = function () {
 	// Toggles auto-switch to Godzamok and updates the UI class of slot buttons
 	GodzamokXtreme.ToggleAutoSwitchGods = function (prefName, button, on, off, invert) {
 		GodzamokXtreme.Toggle(prefName, button, on, off, invert);
-		GodzamokXtreme.updateGodSlotButtonClasses();
+		GodzamokXtreme.UpdateGodSlotButtonClasses();
 	}
 
 	// Refreshes the large UI buttons after toggling
@@ -757,13 +747,13 @@ GodzamokXtreme.launch = function () {
 
 		if (!GodzamokXtreme.config.autoSwitchGods) {
 			Game.Popup("Godzamok not selected");
-			GodzamokXtreme.updateGodSlotButtonClasses();
+			GodzamokXtreme.UpdateGodSlotButtonClasses();
 			return;
 		}
 
 		if (Game.Objects.Temple.minigame.swaps < 1) {
 			Game.Popup("Worship swaps: 0");
-			GodzamokXtreme.updateGodSlotButtonClasses();
+			GodzamokXtreme.UpdateGodSlotButtonClasses();
 			return;
 		}
 
@@ -774,12 +764,12 @@ GodzamokXtreme.launch = function () {
 		Game.Objects.Temple.minigame.hoverSlot(slotIndex);
 		Game.Objects.Temple.minigame.dropGod();
 
-		GodzamokXtreme.updateGodSlotButtonClasses();
+		GodzamokXtreme.UpdateGodSlotButtonClasses();
 	};
 
 
 	// Updates the visual class on UI buttons based on slot state
-	GodzamokXtreme.updateGodSlotButtonClasses = function () {
+	GodzamokXtreme.UpdateGodSlotButtonClasses = function () {
 		const godSlotClass = GodzamokXtreme.getGodSlotVisualClass();
 		const allSlotClasses = GodzamokXtreme.getAllSlotClasses();
 		const btns = document.getElementsByClassName('godzamokXtremeButton');
@@ -812,12 +802,12 @@ GodzamokXtreme.launch = function () {
 
 			if (currentSwaps !== lastSwaps) {
 				lastSwaps = currentSwaps;
-				GodzamokXtreme.updateGodSlotButtonClasses();
+				GodzamokXtreme.UpdateGodSlotButtonClasses();
 			}
 
 			if (!arraysEqual(currentSlots, lastSlots)) {
 				lastSlots = [...currentSlots];
-				GodzamokXtreme.updateGodSlotButtonClasses();
+				GodzamokXtreme.UpdateGodSlotButtonClasses();
 			}
 		}, 3000); // check every 3 seconds
 	};
@@ -829,7 +819,7 @@ GodzamokXtreme.launch = function () {
 	// Updates selected temple slot and refreshes UI
 	GodzamokXtreme.ToggleGodSlot = function (slot) {
 		GodzamokXtreme.config.selectedSlot = slot;
-		GodzamokXtreme.updateGodSlotButtonClasses();
+		GodzamokXtreme.UpdateGodSlotButtonClasses();
 		Game.UpdateMenu();
 	};
 
@@ -840,15 +830,7 @@ GodzamokXtreme.launch = function () {
 	// Toggles the current buyback strategy (gain-based, full, percentage)
 	GodzamokXtreme.ToggleBuybackType = function (index) {
 		GodzamokXtreme.buybackOptions.forEach(option => {
-			const btn = l(`GodzamokXtreme_BuybackType_${option.pref}`);
-			if (!btn) return;
-
-			if (index == option.pref) {
-				GodzamokXtreme.config.buybackType = option.pref;
-				btn.innerHTML = option.name + ": ON";
-			} else {
-				btn.innerHTML = option.name + ": OFF";
-			}
+			if (index == option.pref) GodzamokXtreme.config.buybackType = option.pref;
 		});
 
 		Game.UpdateMenu();
@@ -872,7 +854,7 @@ GodzamokXtreme.launch = function () {
 		const button = l(`GodzamokXtreme_Building_${index}`);
 		const obj = Game.ObjectsById[index];
 
-		button.innerHTML = build.enabled ? `${obj.dname}: ON` : `${obj.dname}: OFF`;
+		button.innerHTML = build.enabled ? `${obj.dname}: ${loc("gx_toggle_on")}` : `${obj.dname}: ${loc("gx_toggle_off")}`;
 		button.className = 'smallFancyButton prefButton option' + (build.enabled ? '' : ' off');
 	};
 
@@ -963,29 +945,51 @@ GodzamokXtreme.launch = function () {
 			building.sell(amountToSell);  // perform the sale
 
 			let boughtAmount = 0;
+			let totalSpent = 0;
 
-			if (GodzamokXtreme.config.buybackEnabled) {
-				switch (GodzamokXtreme.config.buybackType) {
-					case 0: // Buy back as much as totalGain allows
+			const buybackEnabled = GodzamokXtreme.config.buybackEnabled;
+			const showInfo = GodzamokXtreme.config.showSellBuyInfo;
+
+			if (buybackEnabled) {
+				const buybackType = GodzamokXtreme.config.buybackType;
+
+				switch (buybackType) {
+					// Buy back as much as totalGain allows
+					case 0: {
 						while (true) {
 							const price = building.getSumPrice(boughtAmount + 1);
 							if (price > totalGain) break;
 							boughtAmount++;
 						}
-						building.buy(boughtAmount);
 						break;
-
-					case 1: // Buy back full sold amount
-						building.buy(amountToSell);
+					}
+					// Buy back full sold amount
+					case 1: {
 						boughtAmount = amountToSell;
 						break;
-
-					case 2: // Buy back fixed percent of sold
+					}
+					// Buy back fixed percent of sold
+					case 2: {
 						const buybackPercent = Math.max(0, Math.min(GodzamokXtreme.config.buybackPercent, 100));
 						boughtAmount = Math.floor(amountToSell * (buybackPercent / 100));
-						building.buy(boughtAmount);
 						break;
+					}
 				}
+
+				if (showInfo) totalSpent = building.getSumPrice(boughtAmount);
+				building.buy(boughtAmount);
+			}
+
+			if (showInfo) {
+				let message =
+					loc("gx_sold") + ` <span style="color:#f66">${amountToSell}</span> ` + loc("gx_for") + ` <span style="color:#f66">${Beautify(totalGain)}</span>`;
+
+				if (buybackEnabled) {
+					message += `<br>`;
+					message += loc("gx_bought") + ` <span style="color:#69f">${boughtAmount}</span> ` + loc("gx_for") + ` <span style="color:#69f">${Beautify(totalSpent)}</span>`;
+				}
+
+				Game.Notify(building.dname, message, [23, 18], 10);
 			}
 		});
 	};
@@ -1009,7 +1013,6 @@ GodzamokXtreme.launch = function () {
 		};
 	};
 
-
 	//***********************************
 	//    SAVE / LOAD / RESET CONFIG
 	//***********************************
@@ -1026,7 +1029,7 @@ GodzamokXtreme.launch = function () {
 		try {
 			const parsed = JSON.parse(str);
 			if (parsed) {
-				GodzamokXtreme.config = parsed;
+				GodzamokXtreme.config = Object.assign({}, GodzamokXtreme.defaultConfig(), parsed);
 				GodzamokXtreme.UpdateStartButton();  // restore buttons if needed
 			}
 		} catch (e) {
@@ -1036,21 +1039,24 @@ GodzamokXtreme.launch = function () {
 
 	// Asks the player if they want to reset config
 	GodzamokXtreme.confirmResetConfig = function () {
-		Game.Prompt(`Reset ${GodzamokXtreme.name}'s config to the default settings?`,
+		Game.Prompt(
+			loc("gx_confirm_reset_question", { modName: GodzamokXtreme.name }),
 			[
-				[loc("Yes"), 'GodzamokXtreme.resetConfig();Game.ClosePrompt();', 'float:left'],
-				[loc("No"), 0, 'float:right']
-			]);
+				[loc("gx_yes"), 'GodzamokXtreme.resetConfig();Game.ClosePrompt();', 'float:left'],
+				[loc("gx_no"), 0, 'float:right']
+			]
+		);
 	};
 
 	// Applies default config and updates UI
 	GodzamokXtreme.resetConfig = function () {
 		GodzamokXtreme.config = GodzamokXtreme.defaultConfig();
 		GodzamokXtreme.UpdateStartButton();
-		GodzamokXtreme.syncAllSellValues();
+		GodzamokXtreme.monitorTempleSlotsAndSwaps();
+		GodzamokXtreme.syncAllSellValues(0);
 		GodzamokXtreme.save();
 		Game.UpdateMenu();
-		Game.Popup("GodzamokXtreme settings reset.");
+		Game.Popup(loc("gx_settings_reset_popup"));
 	};
 
 	//***********************************
@@ -1060,7 +1066,6 @@ GodzamokXtreme.launch = function () {
 	if (CCSE.ConfirmGameVersion(GodzamokXtreme.name, GodzamokXtreme.version, GodzamokXtreme.GameVersion)) {
 		Game.registerMod(GodzamokXtreme.name, GodzamokXtreme);
 	}
-
 };
 
 // Wait for CCSE to load, then launch the mod

@@ -4,7 +4,7 @@ if (loc("gx_toggle_on") == "gx_toggle_on") Game.LoadMod('https://r33yl.github.io
 
 GodzamokXtreme.name = 'Godzamok Ultimate';
 GodzamokXtreme.ID = 'godzamok_ultimate';
-GodzamokXtreme.version = '2.3';
+GodzamokXtreme.version = '2.4';
 GodzamokXtreme.GameVersion = '2.053';
 
 GodzamokXtreme.launch = function () {
@@ -958,6 +958,10 @@ GodzamokXtreme.launch = function () {
 
 		const budgetPerBuilding = totalBudget / enabled.length;
 
+		// Save current buy mode (in case player is in "sell" mode)
+		const originalBuyMode = Game.buyMode;
+		Game.buyMode = 1; // Force "buy" mode to ensure correct purchase behavior
+
 		enabled.forEach(building => {
 			const index = building.id;
 			const config = GodzamokXtreme.config.buildings[index];
@@ -983,6 +987,9 @@ GodzamokXtreme.launch = function () {
 			building.buy(amount); // Restore bought buildings
 		});
 
+		// Restore original buy mode
+		Game.buyMode = originalBuyMode;
+
 		GodzamokXtreme.syncAllSellValues(1); // Sync % based on new sellUnits
 	};
 
@@ -1002,6 +1009,10 @@ GodzamokXtreme.launch = function () {
 			Game.Popup(loc("gx_no_buildings_selected"));
 			return;
 		}
+
+		// Save current buy mode (in case player is in "sell" mode)
+		const originalBuyMode = Game.buyMode;
+		Game.buyMode = 1; // Force "buy" mode to ensure correct purchase behavior
 
 		Game.ObjectsById.forEach((building, i) => {
 			const config = GodzamokXtreme.config.buildings[i];
@@ -1063,6 +1074,9 @@ GodzamokXtreme.launch = function () {
 				Game.Notify(building.dname, message, [23, 18], 10);
 			}
 		});
+
+		// Restore original buy mode
+		Game.buyMode = originalBuyMode;
 	};
 
 	// Updates wrapper function when delay setting is toggled

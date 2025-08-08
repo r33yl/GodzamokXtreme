@@ -4,7 +4,7 @@ if (loc("gx_toggle_on") == "gx_toggle_on") Game.LoadMod('https://r33yl.github.io
 
 GodzamokXtreme.name = 'Godzamok Ultimate';
 GodzamokXtreme.ID = 'godzamok_ultimate';
-GodzamokXtreme.version = '2.4';
+GodzamokXtreme.version = '2.5';
 GodzamokXtreme.GameVersion = '2.053';
 
 GodzamokXtreme.launch = function () {
@@ -1116,6 +1116,8 @@ GodzamokXtreme.launch = function () {
 			if (parsed) {
 				GodzamokXtreme.config = Object.assign({}, GodzamokXtreme.defaultConfig(), parsed);
 				GodzamokXtreme.UpdateStartButton();  // restore buttons if needed
+				GodzamokXtreme.syncAllSellValues(0);
+				GodzamokXtreme.updateRun();
 			}
 		} catch (e) {
 			console.error("Failed to load GodzamokXtreme config:", e);
@@ -1137,8 +1139,8 @@ GodzamokXtreme.launch = function () {
 	GodzamokXtreme.resetConfig = function () {
 		GodzamokXtreme.config = GodzamokXtreme.defaultConfig();
 		GodzamokXtreme.UpdateStartButton();
-		GodzamokXtreme.monitorTempleSlotsAndSwaps();
 		GodzamokXtreme.syncAllSellValues(0);
+		GodzamokXtreme.updateRun();
 		GodzamokXtreme.save();
 		Game.UpdateMenu();
 		Game.Popup(loc("gx_settings_reset_popup"));

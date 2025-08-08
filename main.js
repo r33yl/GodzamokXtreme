@@ -4,7 +4,7 @@ if (loc("gx_toggle_on") == "gx_toggle_on") Game.LoadMod('https://r33yl.github.io
 
 GodzamokXtreme.name = 'Godzamok Ultimate';
 GodzamokXtreme.ID = 'godzamok_ultimate';
-GodzamokXtreme.version = '2.2';
+GodzamokXtreme.version = '2.3';
 GodzamokXtreme.GameVersion = '2.053';
 
 GodzamokXtreme.launch = function () {
@@ -622,6 +622,14 @@ GodzamokXtreme.launch = function () {
 				'<label>' + loc("gx_preset_units_label") + '</label>' +
 				'</div>';
 
+			// Safe sell calculator
+			str += '<div class="listing">' +
+				addClassToHtml(
+					menu.ActionButton(`GodzamokXtreme.calculateSafeSellUnits();`, loc("gx_calc_safe_sell")),
+					'neato') +
+				'<label>' + loc("gx_calc_safe_sell_label") + '</label>' +
+				'</div>';
+
 			//========== INDIVIDUAL BUILDING SETTINGS ==========
 			for (let index = 0; index < Game.ObjectsById.length; index++) {
 				const obj = Game.ObjectsById[index];
@@ -863,7 +871,6 @@ GodzamokXtreme.launch = function () {
 	GodzamokXtreme.ToggleSellMode = function (index) {
 		GodzamokXtreme.config.sellMode = index;
 		GodzamokXtreme.syncAllSellValues(); // recalculate other mode
-		Game.UpdateMenu();
 	};
 
 	// Synchronizes sellPercent and sellUnits based on current sell mode
@@ -890,7 +897,7 @@ GodzamokXtreme.launch = function () {
 		GodzamokXtreme.config.buildings.forEach((_, index) => {
 			GodzamokXtreme.syncSellValues(index, mode, 0);
 		});
-		Game.UpdateMenu();
+		Game.UpdateMenu(); // Rebuild of the settings menu
 	};
 
 	// Sets the same percent for all enabled buildings
@@ -899,7 +906,6 @@ GodzamokXtreme.launch = function () {
 			b.sellPercent = value;
 		});
 		GodzamokXtreme.syncAllSellValues(0); // sync units from %
-		Game.UpdateMenu();
 	};
 
 	// Resets unit sell values to 0
@@ -908,7 +914,6 @@ GodzamokXtreme.launch = function () {
 			building.sellUnits = 0;
 		});
 		GodzamokXtreme.syncAllSellValues(1); // sync % from 0 units
-		Game.UpdateMenu();
 	};
 
 	// Adds specified number of units to each building (up to owned amount)
@@ -920,7 +925,53 @@ GodzamokXtreme.launch = function () {
 			}
 		});
 		GodzamokXtreme.syncAllSellValues(1); // sync % from units
-		Game.UpdateMenu();
+	};
+
+	// Shows a confirmation prompt before calculating safe sell amounts
+	GodzamokXtreme.calculateSafeSellUnits = function () {
+		Game.Prompt(
+			loc("gx_confirm_safe_sell"),
+			[
+				[loc("gx_yes"), 'GodzamokXtreme._calculateSafeSellConfirmed(); Game.ClosePrompt();', 'float:left'],
+				[loc("gx_no"), 0, 'float:right']
+			]
+		);
+	};
+
+	// Performs the safe sell calculation if user confirms
+	GodzamokXtreme._calculateSafeSellConfirmed = function () {
+		const totalBudget = Game.cookiesPsRaw * 0.01; // Use 1% of raw CPS
+		const enabled = Game.ObjectsById.filter((_, i) => GodzamokXtreme.config.buildings[i].enabled);
+		if (enabled.length === 0) return Game.Popup(loc("gx_no_buildings_selected"));
+
+		const budgetPerBuilding = totalBudget / enabled.length;
+
+		enabled.forEach(building => {
+			const index = building.id;
+			const config = GodzamokXtreme.config.buildings[index];
+
+			// Sell all owned buildings to simulate buyback pricing from 0
+			if (building.amount > 0) {
+				building.sell(building.amount);
+			}
+
+			let amount = 0;
+			let stepSizes = [100, 10, 1]; // Optimize search: big steps first
+
+			// Incrementally find how many buildings can be bought within budget
+			for (let step of stepSizes) {
+				while (true) {
+					const cost = building.getSumPrice(amount + step);
+					if (cost > budgetPerBuilding) break;
+					amount += step;
+				}
+			}
+
+			config.sellUnits = amount; // Save result to config
+			building.buy(amount); // Restore bought buildings
+		});
+
+		GodzamokXtreme.syncAllSellValues(1); // Sync % based on new sellUnits
 	};
 
 	//***********************************
@@ -932,6 +983,13 @@ GodzamokXtreme.launch = function () {
 		GodzamokXtreme.setGodzamok(); // Ensure Godzamok is active if autoSwitch is on
 
 		if (!GodzamokXtreme.isGodzamokActivate()) return;
+
+		// Check if at least one building is selected
+		const anySelected = GodzamokXtreme.config.buildings.some(b => b && b.enabled);
+		if (!anySelected) {
+			Game.Popup(loc("gx_no_buildings_selected"));
+			return;
+		}
 
 		Game.ObjectsById.forEach((building, i) => {
 			const config = GodzamokXtreme.config.buildings[i];
@@ -986,7 +1044,7 @@ GodzamokXtreme.launch = function () {
 					loc("gx_sold") + ` <span style="color:#f66">${amountToSell}</span> ` + loc("gx_for") + ` <span style="color:#f66">${Beautify(totalGain)}</span>`;
 
 				if (buybackEnabled) {
-					message += `<br>`;
+					message += `<br/>`;
 					message += loc("gx_bought") + ` <span style="color:#69f">${boughtAmount}</span> ` + loc("gx_for") + ` <span style="color:#69f">${Beautify(totalSpent)}</span>`;
 				}
 

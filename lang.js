@@ -81,6 +81,10 @@ ModLanguage('*', {
     "gx_preset_percent_label": "Preset % for all buildings",  // Predefined sell percent applied to all buildings
     "gx_preset_units_label": "Preset units to add per building",  // Predefined sell units added per building
 
+    "gx_calc_safe_sell": "Calculate Safe Sell",  // Button to trigger automatic calculation of a safe amount of buildings to sell and rebuy
+    "gx_calc_safe_sell_label": "Auto-calculate safe sell amounts (1% CPS raw)",  // Description label near the button – explains the logic (uses 1% of raw CPS as budget)
+    "gx_confirm_safe_sell": "Recalculate safe sell amounts?<br/>This will SELL and immediately BUY all selected buildings.",  // Confirmation prompt before executing the sell-buy operation
+
     // Labels used near inputs for selling buildings
     "gx_sell_label": "Sell:",
     "gx_or": "or",  // Used between percent and units inputs
@@ -98,6 +102,9 @@ ModLanguage('*', {
 
     // Popup notification text shown after config reset
     "gx_settings_reset_popup": "Godzamok Ultimate settings reset.",  // Confirmation popup message
+
+    // Popup notification text shown when no buildings are selected
+    "gx_no_buildings_selected": "No buildings selected!",
 });
 
 //***********************************
@@ -162,6 +169,10 @@ ModLanguage('ZH-CN', {
     "gx_preset_percent_label": "预设百分比",
     "gx_preset_units_label": "预设数量",
 
+    "gx_calc_safe_sell": "计算安全出售",
+    "gx_calc_safe_sell_label": "自动计算安全出售数量（原始CPS的1%）",
+    "gx_confirm_safe_sell": "重新计算安全出售数量？<br/>这将出售并立即购买所有选定的建筑。",
+
     "gx_sell_label": "出售：",
     "gx_or": "或",
     "gx_units": "个",
@@ -175,6 +186,8 @@ ModLanguage('ZH-CN', {
     "gx_no": "否",
 
     "gx_settings_reset_popup": "Godzamok Ultimate 配置已重置。",
+
+    "gx_no_buildings_selected": "未选择任何建筑！",
 });
 
 //***********************************
@@ -239,6 +252,10 @@ ModLanguage('DE', {
     "gx_preset_percent_label": "Voreingestellter % für alle Gebäude",
     "gx_preset_units_label": "Voreingestellte Einheiten pro Gebäude",
 
+    "gx_calc_safe_sell": "Sicheren Verkauf berechnen",
+    "gx_calc_safe_sell_label": "Sichere Verkaufsmenge automatisch berechnen (1 % rohes CPS)",
+    "gx_confirm_safe_sell": "Sichere Verkaufsmenge neu berechnen?<br/>Dadurch werden alle ausgewählten Gebäude VERKAUFT und sofort WIEDER GEKAUFT.",
+
     "gx_sell_label": "Verkauf:",
     "gx_or": "oder",
     "gx_units": "Einheiten",
@@ -252,6 +269,8 @@ ModLanguage('DE', {
     "gx_no": "Nein",
 
     "gx_settings_reset_popup": "Godzamok Ultimate-Einstellungen wurden zurückgesetzt.",
+
+    "gx_no_buildings_selected": "Keine Gebäude ausgewählt!",
 });
 
 //***********************************
@@ -316,6 +335,10 @@ ModLanguage('ES', {
     "gx_preset_percent_label": "Porcentaje predefinido para todos los edificios",
     "gx_preset_units_label": "Unidades predefinidas para agregar por edificio",
 
+    "gx_calc_safe_sell": "Calcular Venta Segura",
+    "gx_calc_safe_sell_label": "Calcular automáticamente cantidades seguras para vender (1% CPS bruto)",
+    "gx_confirm_safe_sell": "¿Recalcular cantidades seguras para vender?<br/>Esto VENDERÁ y COMPRARÁ inmediatamente todos los edificios seleccionados.",
+
     "gx_sell_label": "Vender:",
     "gx_or": "o",
     "gx_units": "unidades",
@@ -329,6 +352,8 @@ ModLanguage('ES', {
     "gx_no": "No",
 
     "gx_settings_reset_popup": "Configuración de Godzamok Ultimate restablecida.",
+
+    "gx_no_buildings_selected": "¡Ningún edificio seleccionado!",
 });
 
 //***********************************
@@ -393,6 +418,10 @@ ModLanguage('FR', {
     "gx_preset_percent_label": "% prédef. pour tous",
     "gx_preset_units_label": "Unités prédef. par bâtiment",
 
+    "gx_calc_safe_sell": "Calculer la vente sécurisée",
+    "gx_calc_safe_sell_label": "Calcul automatique des montants sécurisés à vendre (1 % du CPS brut)",
+    "gx_confirm_safe_sell": "Recalculer les montants sécurisés à vendre ?<br/>Cela VENDRA et ACHETERA immédiatement tous les bâtiments sélectionnés.",
+
     "gx_sell_label": "Vendre :",
     "gx_or": "ou",
     "gx_units": "unités",
@@ -406,6 +435,8 @@ ModLanguage('FR', {
     "gx_no": "Non",
 
     "gx_settings_reset_popup": "Config Godzamok Ultimate réinitialisée.",
+
+    "gx_no_buildings_selected": "Aucun bâtiment sélectionné !",
 });
 
 //***********************************
@@ -470,6 +501,10 @@ ModLanguage('PT-BR', {
     "gx_preset_percent_label": "% padrão para todos",
     "gx_preset_units_label": "Unids padrão por prédio",
 
+    "gx_calc_safe_sell": "Calcular Venda Segura",
+    "gx_calc_safe_sell_label": "Calcular automaticamente a quantidade segura para vender (1% do CPS bruto)",
+    "gx_confirm_safe_sell": "Recalcular quantidades seguras para venda?<br/>Isto VENDERÁ e imediatamente COMPRARÁ todos os prédios selecionados.",
+
     "gx_sell_label": "Vender:",
     "gx_or": "ou",
     "gx_units": "unids",
@@ -483,6 +518,8 @@ ModLanguage('PT-BR', {
     "gx_no": "Não",
 
     "gx_settings_reset_popup": "Configurações Godzamok Ultimate resetadas.",
+
+    "gx_no_buildings_selected": "Nenhum edifício selecionado!",
 });
 
 //***********************************
@@ -547,6 +584,10 @@ ModLanguage('RU', {
     "gx_preset_percent_label": "Заданный % для всех зданий",
     "gx_preset_units_label": "Заданное количество для добавления на здание",
 
+    "gx_calc_safe_sell": "Рассчитать безопасную продажу",
+    "gx_calc_safe_sell_label": "Автоматически рассчитывать безопасное количество для продажи (1% от базового CPS)",
+    "gx_confirm_safe_sell": "Пересчитать безопасное количество для продажи?<br/>Это ПРОДАСТ и сразу же КУПИТ все выбранные здания.",
+
     "gx_sell_label": "Продать:",
     "gx_or": "или",
     "gx_units": "штук",
@@ -558,7 +599,10 @@ ModLanguage('RU', {
     "gx_confirm_reset_question": "Сбросить настройки Godzamok Ultimate до значений по умолчанию?",
     "gx_yes": "Да",
     "gx_no": "Нет",
+
     "gx_settings_reset_popup": "Настройки Godzamok Ultimate сброшены.",
+
+    "gx_no_buildings_selected": "Не выбрано ни одного здания!",
 });
 
 //***********************************
@@ -623,6 +667,10 @@ ModLanguage('TR', {
     "gx_preset_percent_label": "Tüm binalar için yüzde",
     "gx_preset_units_label": "Bina başı satış adedi",
 
+    "gx_calc_safe_sell": "Güvenli Satışı Hesapla",
+    "gx_calc_safe_sell_label": "Güvenli satış miktarlarını otomatik hesapla (ham CPS'nin %1'i)",
+    "gx_confirm_safe_sell": "Güvenli satış miktarları yeniden hesaplansın mı?<br/>Bu, seçilen tüm binaları SATIP hemen tekrar satın alacaktır.",
+
     "gx_sell_label": "Sat:",
     "gx_or": "veya",
     "gx_units": "adet",
@@ -636,4 +684,6 @@ ModLanguage('TR', {
     "gx_no": "Hayır",
 
     "gx_settings_reset_popup": "Godzamok Ultimate ayarları sıfırlandı.",
+
+    "gx_no_buildings_selected": "Hiç bina seçilmedi!",
 });

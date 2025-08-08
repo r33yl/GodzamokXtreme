@@ -615,6 +615,7 @@ GodzamokXtreme.launch = function () {
 
 			// Preset buttons for unit values
 			str += '<div class="listing widthAuto">' +
+				addClassToHtml(menu.ActionButton(`GodzamokXtreme.subtractSellUnits(10);`, `-10`), 'purple') +
 				addClassToHtml(menu.ActionButton(`GodzamokXtreme.resetSellUnits();`, `0`), 'purple') +
 				addClassToHtml(menu.ActionButton(`GodzamokXtreme.addSellUnits(10);`, `+10`), 'purple') +
 				addClassToHtml(menu.ActionButton(`GodzamokXtreme.addSellUnits(50);`, `+50`), 'purple') +
@@ -906,6 +907,17 @@ GodzamokXtreme.launch = function () {
 			b.sellPercent = value;
 		});
 		GodzamokXtreme.syncAllSellValues(0); // sync units from %
+	};
+
+	// Subtracts specified number of units from each building (minimum is 0)
+	GodzamokXtreme.subtractSellUnits = function (amount) {
+		GodzamokXtreme.config.buildings.forEach((building, index) => {
+			const obj = Game.ObjectsById[index];
+			if (obj && obj.amount > 0) {
+				building.sellUnits = Math.max(0, building.sellUnits - amount);
+			}
+		});
+		GodzamokXtreme.syncAllSellValues(1); // sync % from units
 	};
 
 	// Resets unit sell values to 0

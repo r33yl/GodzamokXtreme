@@ -48,10 +48,15 @@ ModLanguage('*', {
 
     // Hotkey G toggle label
     "gx_hotkey_g": "Hotkey G: ",
+    // Label for the setting that allows triggering the script by pressing the G key (hotkey toggle option)
+    "gx_hotkey_g_label": "Run script when pressing G",
+
     // Input delay toggle label - delays input events
     "gx_input_delay": "Input delay: ",
     // Label describing the delay applied between actions (in milliseconds)
     "gx_input_delay_label": "Apply delay between actions",
+    // Label for user-defined delay duration between each run cycle
+    "gx_delay_duration_label": "Set custom delay between runs",
 
     // Auto-switch toggle to automatically assign the Godzamok spirit if inactive
     "gx_auto_switch_god": "Auto-switch to Godzamok: ",
@@ -146,8 +151,11 @@ ModLanguage('ZH-CN', {
     "gx_show_loop_button_label": "长按显示额外循环按钮",
 
     "gx_hotkey_g": "快捷键 G：",
+    "gx_hotkey_g_label": "按下 G 键时运行脚本",
+
     "gx_input_delay": "输入延迟：",
     "gx_input_delay_label": "动作间应用延迟（毫秒）",
+    "gx_delay_duration_label": "设置自定义运行间隔延迟",
 
     "gx_auto_switch_god": "自动切换 Godzamok：",
     "gx_auto_switch_god_label": "未激活时自动分配 Godzamok",
@@ -229,8 +237,11 @@ ModLanguage('DE', {
     "gx_show_loop_button_label": "Zusätzliche Schaltfläche für wiederholte Ausführung anzeigen",
 
     "gx_hotkey_g": "Tastenkürzel G: ",
+    "gx_hotkey_g_label": "Skript mit der Taste G ausführen",
+
     "gx_input_delay": "Eingabeverzögerung: ",
     "gx_input_delay_label": "Verzögerung zwischen Aktionen anwenden",
+    "gx_delay_duration_label": "Benutzerdefinierte Verzögerung zwischen Ausführungen festlegen",
 
     "gx_auto_switch_god": "Automatisch zu Godzamok wechseln: ",
     "gx_auto_switch_god_label": "Godzamok automatisch zuweisen, wenn nicht aktiv",
@@ -312,8 +323,11 @@ ModLanguage('ES', {
     "gx_show_loop_button_label": "Mostrar botón adicional para ejecución repetida del script",
 
     "gx_hotkey_g": "Tecla G: ",
+    "gx_hotkey_g_label": "Ejecutar el script al presionar G",
+
     "gx_input_delay": "Retraso de entrada: ",
     "gx_input_delay_label": "Aplicar retraso entre acciones",
+    "gx_delay_duration_label": "Establecer retraso personalizado entre ejecuciones",
 
     "gx_auto_switch_god": "Cambio automático a Godzamok: ",
     "gx_auto_switch_god_label": "Asignar automáticamente a Godzamok si no está activo",
@@ -395,8 +409,11 @@ ModLanguage('FR', {
     "gx_show_loop_button_label": "Bouton pour exécution répétée en maintien",
 
     "gx_hotkey_g": "Touche G : ",
+    "gx_hotkey_g_label": "Exécuter le script en appuyant sur G",
+
     "gx_input_delay": "Délai entrée : ",
     "gx_input_delay_label": "Appliquer délai entre actions",
+    "gx_delay_duration_label": "Définir un délai personnalisé entre les exécutions",
 
     "gx_auto_switch_god": "Auto-switch Godzamok : ",
     "gx_auto_switch_god_label": "Attribuer Godzamok si inactif",
@@ -478,8 +495,11 @@ ModLanguage('PT-BR', {
     "gx_show_loop_button_label": "Botão extra para execução repetida",
 
     "gx_hotkey_g": "Hotkey G: ",
+    "gx_hotkey_g_label": "Executar o script ao pressionar G",
+
     "gx_input_delay": "Atraso: ",
     "gx_input_delay_label": "Aplicar atraso entre ações",
+    "gx_delay_duration_label": "Definir atraso personalizado entre execuções",
 
     "gx_auto_switch_god": "Auto mudar p/ Godzamok: ",
     "gx_auto_switch_god_label": "Mudar automaticamente se inativo",
@@ -561,8 +581,11 @@ ModLanguage('RU', {
     "gx_show_loop_button_label": "Показывать дополнительную кнопку для повторного запуска скрипта при удержании",
 
     "gx_hotkey_g": "Горячая клавиша G: ",
+    "gx_hotkey_g_label": "Запускать скрипт по нажатию G",
+
     "gx_input_delay": "Задержка ввода: ",
     "gx_input_delay_label": "Применять задержку между действиями",
+    "gx_delay_duration_label": "Установить собственную задержку между запусками",
 
     "gx_auto_switch_god": "Автопереключение на Godzamok: ",
     "gx_auto_switch_god_label": "Автоматически назначать Godzamok, если он не активен",
@@ -644,8 +667,11 @@ ModLanguage('TR', {
     "gx_show_loop_button_label": "Basılı tutma için tekrar butonu göster",
 
     "gx_hotkey_g": "Kısayol G: ",
+    "gx_hotkey_g_label": "G tuşuna basıldığında betiği çalıştır",
+
     "gx_input_delay": "Girdi Gecikmesi: ",
     "gx_input_delay_label": "İşlemler arası gecikme uygula",
+    "gx_delay_duration_label": "Çalıştırmalar arasındaki özel gecikmeyi ayarla",
 
     "gx_auto_switch_god": "Otomatik Godzamok: ",
     "gx_auto_switch_god_label": "Aktif değilse Godzamok otomatik ata",

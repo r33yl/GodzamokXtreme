@@ -4,7 +4,7 @@ if (loc("gx_toggle_on") == "gx_toggle_on") Game.LoadMod('https://r33yl.github.io
 
 GodzamokXtreme.name = 'Godzamok Ultimate';
 GodzamokXtreme.ID = 'godzamok_ultimate';
-GodzamokXtreme.version = '2.5';
+GodzamokXtreme.version = '2.6';
 GodzamokXtreme.GameVersion = '2.053';
 
 GodzamokXtreme.launch = function () {
@@ -19,11 +19,12 @@ GodzamokXtreme.launch = function () {
 			// === UI & Controls ===
 			showSellBuyInfo: 0,       // Show summary info (how many buildings were sold/bought) after each script run
 			showMainButton: 1,        // Show the main Godzamok button near the big cookie
-			showTempleButton: 0,      // Show an additional button in the Temple minigame
-			showLoopButton: 1,		  // Show "Loop" button to repeatedly sell/buy buildings in a loop
-			loopModeEnabled: 0,		  // Whether Loop Mode is currently active (1 = active, 0 = off)
+			showTempleButton: 1,      // Show an additional button in the Temple minigame
+			showLoopButton: 1,        // Show "Loop" button to repeatedly sell/buy buildings in a loop
+			loopModeEnabled: 0,       // Whether Loop Mode is currently active (1 = active, 0 = off)
 			hotkeyG: 1,               // Enable "G" hotkey to trigger script
-			inputDelay: 1,            // Add delay between input events
+			inputDelayEnabled: 1,     // Add delay between input events
+			inputDelayValue: 100,     // Delay duration in milliseconds
 			// === Temple ===
 			autoSwitchGods: 1,        // Automatically switch to Godzamok if not selected
 			selectedSlot: 1,          // Temple slot where Godzamok will be placed
@@ -45,7 +46,7 @@ GodzamokXtreme.launch = function () {
 		};
 	};
 
-	GodzamokXtreme.defaultDelay = 50;
+	GodzamokXtreme.defaultDelay = 1;
 
 	//***********************************
 	//    ENUM OPTIONS
@@ -73,6 +74,8 @@ GodzamokXtreme.launch = function () {
 			.infoText { font-size: 12px; color: rgba(255,255,255,0.5) }
 			a.option.purple{ color: #8e00d6; border-color: #8e00d6; }
 			a.option.purple:hover{ color: #ba30ff; border-color: #ba30ff; }
+			a.option.orange{ color: #ff8f00; border-color: #ff8f00; }
+			a.option.orange:hover{ color: #ffa835; border-color: #ffa835; }
 			.godzamokXtremeWrapper {
 				display: block;
 				position: absolute;
@@ -264,7 +267,6 @@ GodzamokXtreme.launch = function () {
 		GodzamokXtreme.addMainButtons();
 		GodzamokXtreme.addKeyListener();
 		GodzamokXtreme.monitorTempleSlotsAndSwaps();
-		GodzamokXtreme.syncAllSellValues(0);
 
 		// Setup core run logic (with throttling if enabled)
 		GodzamokXtreme.updateRun();
@@ -339,13 +341,18 @@ GodzamokXtreme.launch = function () {
 			btn.classList.toggle('loop-active', GodzamokXtreme.config.loopModeEnabled);
 		}
 
+		function loop() {
+			if (!GodzamokXtreme.config.loopModeEnabled) return;
+			GodzamokXtreme.run();
+			GodzamokXtreme._loopTimeout = setTimeout(loop, GodzamokXtreme.defaultDelay);
+		}
+
 		if (GodzamokXtreme.config.loopModeEnabled) {
-			const delay = GodzamokXtreme.config.inputDelay ? GodzamokXtreme.defaultDelay : 0;
-			GodzamokXtreme._loopInterval = setInterval(() => {
-				GodzamokXtreme.run();
-			}, delay);
+			// GodzamokXtreme._loopInterval = setInterval(GodzamokXtreme.run(), GodzamokXtreme.defaultDelay);
+			loop();
 		} else {
-			clearInterval(GodzamokXtreme._loopInterval);
+			// clearInterval(GodzamokXtreme._loopTimeout);
+			clearTimeout(GodzamokXtreme._loopTimeout);
 			GodzamokXtreme._loopInterval = null;
 		}
 	};
@@ -444,16 +451,12 @@ GodzamokXtreme.launch = function () {
 					loc("gx_button_in_temple") + loc("gx_toggle_on"),
 					loc("gx_button_in_temple") + loc("gx_toggle_off"),
 					"GodzamokXtreme.ToggleStartButton") +
-				'<label>' + loc("gx_display_buttons_label") + '</label>' +
-				'</div>';
-
-			str += '<div class="listing">' +
 				menu.ToggleButton(GodzamokXtreme.config, 'showLoopButton',
 					'GodzamokXtreme_ShowLoopButton',
 					loc("gx_show_loop_button") + loc("gx_toggle_on"),
 					loc("gx_show_loop_button") + loc("gx_toggle_off"),
 					"GodzamokXtreme.ToggleStartButton") +
-				'<label>' + loc("gx_show_loop_button_label") + '</label>' +
+				'<label>' + loc("gx_display_buttons_label") + '</label>' +
 				'</div>';
 
 			str += '<div class="listing">' +
@@ -462,14 +465,38 @@ GodzamokXtreme.launch = function () {
 					loc("gx_hotkey_g") + loc("gx_toggle_on"),
 					loc("gx_hotkey_g") + loc("gx_toggle_off"),
 					"GodzamokXtreme.Toggle") +
+				'<label>' + loc("gx_hotkey_g_label") + '</label>' +
+				'</div>';
+
+			// Input delay
+			str += '<div class="listing">' +
 				addClassToHtml(
-					menu.ToggleButton(GodzamokXtreme.config, 'inputDelay',
-						'GodzamokXtreme_InputDelay',
+					menu.ToggleButton(GodzamokXtreme.config, 'inputDelayEnabled',
+						'GodzamokXtreme_InputDelayEnabled',
 						loc("gx_input_delay") + loc("gx_toggle_on"),
 						loc("gx_input_delay") + loc("gx_toggle_off"),
 						"GodzamokXtreme.ToggleInputDelay"),
-					'neato') +
-				`<label>` + loc("gx_input_delay_label") + ` ${GodzamokXtreme.defaultDelay} ms</label>` +
+					'orange') +
+				`<label>` + loc("gx_input_delay_label") + ` ${GodzamokXtreme.config.inputDelayValue} ms</label>` +
+				'</div>';
+
+			str += '<div class="listing">' +
+				addClassToHtml(
+					menu.Slider(
+						'GodzamokXtreme_DelayDurationSlider',
+						loc("gx_input_delay"),
+						'[$] ms',
+						() => GodzamokXtreme.config.inputDelayEnabled
+							? GodzamokXtreme.config.inputDelayValue
+							: GodzamokXtreme.defaultDelay,
+						GodzamokXtreme.config.inputDelayEnabled
+							? 'GodzamokXtreme.updateDelayDuration(this.value);'
+							: '',
+						10, 1000, 10
+					),
+					GodzamokXtreme.config.inputDelayEnabled ? '' : 'disable'
+				) +
+				'<label>' + loc("gx_delay_duration_label") + '</label>' +
 				'</div>';
 
 			str += '<br/>';
@@ -548,7 +575,9 @@ GodzamokXtreme.launch = function () {
 						loc("gx_buyback_percent"),
 						'[$]%',
 						() => GodzamokXtreme.config.buybackPercent,
-						'GodzamokXtreme.updateBuybackPercent(this.value);',
+						GodzamokXtreme.config.buybackType === 2
+							? 'GodzamokXtreme.updateBuybackPercent(this.value);'
+							: '',
 						0, 100, 5
 					),
 					GodzamokXtreme.config.buybackType === 2 ? '' : 'disable'
@@ -627,7 +656,7 @@ GodzamokXtreme.launch = function () {
 			str += '<div class="listing">' +
 				addClassToHtml(
 					menu.ActionButton(`GodzamokXtreme.calculateSafeSellUnits();`, loc("gx_calc_safe_sell")),
-					'neato') +
+					'orange') +
 				'<label>' + loc("gx_calc_safe_sell_label") + '</label>' +
 				'</div>';
 
@@ -695,9 +724,16 @@ GodzamokXtreme.launch = function () {
 		GodzamokXtreme.UpdateStartButton();
 	};
 
-	// Toggles the 'inputDelay' setting and rebinds the run function with or without throttling
+	// Toggles the 'inputDelayEnabled' setting and rebinds the run function with or without throttling
 	GodzamokXtreme.ToggleInputDelay = function (prefName, button, on, off, invert) {
 		GodzamokXtreme.Toggle(prefName, button, on, off, invert);
+		GodzamokXtreme.updateRun();
+	};
+
+	// Updates the delay duration value slider
+	GodzamokXtreme.updateDelayDuration = function (val) {
+		GodzamokXtreme.config.inputDelayValue = parseInt(val);
+		l('GodzamokXtreme_DelayDurationSliderRightText').textContent = val + ' ms';
 		GodzamokXtreme.updateRun();
 	};
 
@@ -1014,12 +1050,20 @@ GodzamokXtreme.launch = function () {
 		const originalBuyMode = Game.buyMode;
 		Game.buyMode = 1; // Force "buy" mode to ensure correct purchase behavior
 
+		const isPercentSellMode = GodzamokXtreme.config.sellMode === 0;
+		const buybackEnabled = GodzamokXtreme.config.buybackEnabled;
+		const buybackType = GodzamokXtreme.config.buybackType;
+		const showInfo = GodzamokXtreme.config.showSellBuyInfo;
+
 		Game.ObjectsById.forEach((building, i) => {
 			const config = GodzamokXtreme.config.buildings[i];
 			if (!config || !config.enabled) return;
 
-			const sellPercent = Math.max(0, Math.min(config.sellPercent, 100));
-			const amountToSell = Math.floor(building.amount * (sellPercent / 100));
+			let amountToSell = config.sellUnits;
+			if (isPercentSellMode) {
+				const sellPercent = Math.max(0, Math.min(config.sellPercent, 100));
+				amountToSell = Math.floor(building.amount * (sellPercent / 100));
+			}
 
 			if (amountToSell <= 0) return;
 
@@ -1029,12 +1073,7 @@ GodzamokXtreme.launch = function () {
 			let boughtAmount = 0;
 			let totalSpent = 0;
 
-			const buybackEnabled = GodzamokXtreme.config.buybackEnabled;
-			const showInfo = GodzamokXtreme.config.showSellBuyInfo;
-
 			if (buybackEnabled) {
-				const buybackType = GodzamokXtreme.config.buybackType;
-
 				switch (buybackType) {
 					// Buy back as much as totalGain allows
 					case 0: {
@@ -1081,8 +1120,8 @@ GodzamokXtreme.launch = function () {
 
 	// Updates wrapper function when delay setting is toggled
 	GodzamokXtreme.updateRun = function () {
-		GodzamokXtreme.run = GodzamokXtreme.config.inputDelay
-			? throttle(GodzamokXtreme.runCore, GodzamokXtreme.defaultDelay)
+		GodzamokXtreme.run = GodzamokXtreme.config.inputDelayEnabled
+			? throttle(GodzamokXtreme.runCore, GodzamokXtreme.config.inputDelayValue)
 			: GodzamokXtreme.runCore;
 	};
 
@@ -1116,7 +1155,7 @@ GodzamokXtreme.launch = function () {
 			if (parsed) {
 				GodzamokXtreme.config = Object.assign({}, GodzamokXtreme.defaultConfig(), parsed);
 				GodzamokXtreme.UpdateStartButton();  // restore buttons if needed
-				GodzamokXtreme.syncAllSellValues(0);
+				GodzamokXtreme.syncAllSellValues();
 				GodzamokXtreme.updateRun();
 			}
 		} catch (e) {

@@ -4,7 +4,7 @@ if (loc("gx_toggle_on") == "gx_toggle_on") Game.LoadMod('https://r33yl.github.io
 
 GodzamokXtreme.name = 'Godzamok Ultimate';
 GodzamokXtreme.ID = 'godzamok_ultimate';
-GodzamokXtreme.version = '2.6';
+GodzamokXtreme.version = '2.8';
 GodzamokXtreme.GameVersion = '2.053';
 
 GodzamokXtreme.launch = function () {
@@ -278,8 +278,16 @@ GodzamokXtreme.launch = function () {
 	//    UI BUTTONS
 	//***********************************
 
-	GodzamokXtreme.addMainButtons = function () {
-		if (!Game.Objects.Temple.minigameLoaded) return;
+	GodzamokXtreme.addMainButtons = function (attempt = 0) {
+		if (!Game.Objects.Temple.minigameLoaded) {
+			const maxAttempts = 10;
+			if (attempt >= maxAttempts) {
+				console.warn('GodzamokXtreme: Temple minigame did not load after ' + maxAttempts + ' attempts — main buttons not added.');
+				return;
+			}
+			setTimeout(() => GodzamokXtreme.addMainButtons(attempt + 1), 1000);
+			return;
+		}
 
 		GodzamokXtreme.addBuffUpdateHook(); // Activate buff-dependent shine
 
@@ -834,7 +842,17 @@ GodzamokXtreme.launch = function () {
 	//***********************************
 
 	// Monitors Temple swaps and slot changes to update UI dynamically
-	GodzamokXtreme.monitorTempleSlotsAndSwaps = function () {
+	GodzamokXtreme.monitorTempleSlotsAndSwaps = function (attempt = 0) {
+		if (!Game.Objects.Temple.minigameLoaded) {
+			const maxAttempts = 10;
+			if (attempt >= maxAttempts) {
+				console.warn('GodzamokXtreme: Temple minigame did not load after ' + maxAttempts + ' attempts — Temple swap/slot monitoring disabled.');
+				return;
+			}
+			setTimeout(() => GodzamokXtreme.monitorTempleSlotsAndSwaps(attempt + 1), 1000);
+			return;
+		}
+
 		let lastSwaps = Game.Objects.Temple.minigame.swaps;
 		let lastSlots = [...Game.Objects.Temple.minigame.slot];
 
@@ -930,11 +948,11 @@ GodzamokXtreme.launch = function () {
 	};
 
 	// Applies syncSellValues to all buildings
-	GodzamokXtreme.syncAllSellValues = function (mode) {
+	GodzamokXtreme.syncAllSellValues = function (mode, updateMenu = 1) {
 		GodzamokXtreme.config.buildings.forEach((_, index) => {
 			GodzamokXtreme.syncSellValues(index, mode, 0);
 		});
-		Game.UpdateMenu(); // Rebuild of the settings menu
+		if (updateMenu) Game.UpdateMenu(); // Rebuild of the settings menu
 	};
 
 	// Sets the same percent for all enabled buildings
@@ -1154,13 +1172,15 @@ GodzamokXtreme.launch = function () {
 			const parsed = JSON.parse(str);
 			if (parsed) {
 				GodzamokXtreme.config = Object.assign({}, GodzamokXtreme.defaultConfig(), parsed);
-				GodzamokXtreme.UpdateStartButton();  // restore buttons if needed
-				GodzamokXtreme.syncAllSellValues();
-				GodzamokXtreme.updateRun();
+				GodzamokXtreme.config.loopModeEnabled = 0;
 			}
 		} catch (e) {
 			console.error("Failed to load GodzamokXtreme config:", e);
 		}
+
+		GodzamokXtreme.UpdateStartButton();
+		GodzamokXtreme.syncAllSellValues(-1, 0);
+		GodzamokXtreme.updateRun();
 	};
 
 	// Asks the player if they want to reset config

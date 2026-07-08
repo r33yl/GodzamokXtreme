@@ -3,9 +3,9 @@
  "ID": "godzamok_ultimate",
  "Author": "reeyl",
  "Description": "Godzamok Ultimate — mod that automates building sales and god swaps for Godzamok bonuses.",
- "ModVersion": 2.6,
+ "ModVersion": 2.8,
  "GameVersion": 2.053,
- "Date": "24/10/2025",
+ "Date": "08/07/2026",
  "Dependencies": [
   "CCSE"
  ],
